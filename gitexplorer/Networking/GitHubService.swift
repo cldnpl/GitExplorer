@@ -18,9 +18,8 @@ struct GitHubService: GitHubServicing {
         self.session = session
     }
 
-    func searchRepositories(query: String) async throws -> [Repository] {
-        let response: SearchResponse = try await get(.searchRepositories(query: query))
-        return response.items
+    func searchRepositories(query: String) async throws -> SearchResponse {
+        try await get(.searchRepositories(query: query))
     }
 
     func latestRelease(owner: String, repo: String) async throws -> Release? {

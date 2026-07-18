@@ -9,12 +9,12 @@ import SwiftUI
 
 /// Schermata di ricerca dei repository.
 ///
-/// Step 3a: layout statico dello stato iniziale. All'apertura sono visibili
-/// solo l'header "Repository library", il campo di ricerca e l'empty state,
-/// come richiesto dal primo criterio di accettazione. La logica di ricerca
-/// (debounce, soglia 3 caratteri, risultati) arriverà nello step successivo.
+/// Step 3b: la digitazione avvia la ricerca reale (con debounce e soglia di 3
+/// caratteri gestiti da `SearchViewModel`) e la vista reagisce allo `ViewState`.
+/// Le righe dei risultati sono ancora provvisorie: il layout definitivo (avatar,
+/// fallback folder, descrizione) arriva nello step 3c.
 struct SearchView: View {
-    @State private var query: String = ""
+    @StateObject private var viewModel = SearchViewModel()
 
     var body: some View {
         NavigationStack {
@@ -25,7 +25,7 @@ struct SearchView: View {
 
                 searchField
 
-                emptyState
+                content
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -41,29 +41,96 @@ struct SearchView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(AppColor.textSecondary)
 
-            TextField("Search", text: $query)
+            TextField("Search", text: $viewModel.query)
                 .foregroundStyle(AppColor.textPrimary)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
+                .onChange(of: viewModel.query) {
+                    viewModel.queryDidChange()
+                }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .background(AppColor.searchField, in: RoundedRectangle(cornerRadius: 10))
     }
 
-    // MARK: - Empty state
+    // MARK: - Contenuto (dipende dallo stato)
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewModel.state {
+        case .idle:
+            emptyState
+
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+        case .loaded(let repositories):
+            resultsList(repositories)
+
+        case .empty:
+            message(
+                title: "No repositories found",
+                subtitle: "Try a different search term."
+            )
+
+        case .failed(let errorMessage):
+            message(
+                title: "Something went wrong",
+                subtitle: errorMessage,
+                systemImage: "exclamationmark.triangle"
+            )
+        }
+    }
+
+    private func resultsList(_ repositories: [Repository]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("\(viewModel.resultCount) results")
+                .font(.subheadline)
+                .foregroundStyle(AppColor.textSecondary)
+
+            List(repositories) { repository in
+                // Riga provvisoria (verrà sostituita nello step 3c).
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(repository.displayTitle)
+                        .font(.headline)
+                        .foregroundStyle(AppColor.textPrimary)
+                    if let description = repository.description {
+                        Text(description)
+                            .font(.subheadline)
+                            .foregroundStyle(AppColor.textSecondary)
+                            .lineLimit(1)
+                    }
+                }
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                .listRowSeparatorTint(AppColor.divider)
+            }
+            .listStyle(.plain)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Stati testuali
 
     private var emptyState: some View {
+        message(
+            title: "Search the repository library",
+            subtitle: "Type at least 3 characters to start searching."
+        )
+    }
+
+    private func message(title: String, subtitle: String, systemImage: String = "magnifyingglass") -> some View {
         VStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: systemImage)
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(AppColor.textSecondary)
 
-            Text("Search the repository library")
+            Text(title)
                 .font(.headline)
                 .foregroundStyle(AppColor.textPrimary)
 
-            Text("Type at least 3 characters to start searching.")
+            Text(subtitle)
                 .font(.subheadline)
                 .foregroundStyle(AppColor.textSecondary)
                 .multilineTextAlignment(.center)
