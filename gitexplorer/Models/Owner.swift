@@ -9,7 +9,7 @@ import Foundation
 
 /// Proprietario di un repository: usato per il nome dell'organizzazione e per
 /// l'avatar mostrato come icona del repository.
-struct Owner: Codable, Equatable, Sendable {
+struct Owner: Codable, Hashable, Sendable {
     let login: String
     let avatarURL: URL?
 

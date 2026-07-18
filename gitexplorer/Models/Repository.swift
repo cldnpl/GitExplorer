@@ -9,7 +9,7 @@ import Foundation
 
 /// Un repository GitHub con le caratteristiche mostrate nelle schermate di
 /// ricerca e di dettaglio.
-struct Repository: Codable, Equatable, Identifiable, Sendable {
+struct Repository: Codable, Hashable, Identifiable, Sendable {
     let id: Int
     let name: String
     let fullName: String

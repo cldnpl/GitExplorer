@@ -31,6 +31,9 @@ struct SearchView: View {
             .padding(.top, 12)
             .frame(maxHeight: .infinity, alignment: .top)
             .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: Repository.self) { repository in
+                RepositoryDetailView(repository: repository)
+            }
         }
     }
 
@@ -92,6 +95,12 @@ struct SearchView: View {
 
             List(repositories) { repository in
                 RepositoryRowView(repository: repository)
+                    .background(
+                        // Link nello sfondo: rende la riga navigabile senza mostrare
+                        // il chevron di default, assente nel design.
+                        NavigationLink(value: repository) { EmptyView() }
+                            .opacity(0)
+                    )
                     .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                     .listRowSeparator(.hidden)
             }
