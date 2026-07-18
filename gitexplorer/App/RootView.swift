@@ -31,9 +31,7 @@ struct RootView: View {
                         phase = .main
                     }
             case .main:
-                // Placeholder temporaneo: nel prossimo step diventa la Search screen.
-                Text("Search screen — prossimo step")
-                    .foregroundStyle(.secondary)
+                SearchView()
             }
         }
         .animation(.easeInOut, value: phase)
