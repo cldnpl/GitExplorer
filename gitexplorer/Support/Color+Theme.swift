@@ -27,4 +27,8 @@ enum AppColor {
     static let searchField = Color(hex: 0xF2F3F7)
     /// Linee divisorie.
     static let divider = Color(hex: 0xE6E6E6)
+    /// Sfondo dell'icona folder di default (repository senza avatar).
+    static let folderIconBackground = Color(hex: 0xE9FAFA)
+    /// Colore del glifo folder di default.
+    static let folderIconTint = Color(hex: 0x25C9D0)
 }

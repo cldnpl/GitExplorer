@@ -91,20 +91,9 @@ struct SearchView: View {
                 .foregroundStyle(AppColor.textSecondary)
 
             List(repositories) { repository in
-                // Riga provvisoria (verrà sostituita nello step 3c).
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(repository.displayTitle)
-                        .font(.headline)
-                        .foregroundStyle(AppColor.textPrimary)
-                    if let description = repository.description {
-                        Text(description)
-                            .font(.subheadline)
-                            .foregroundStyle(AppColor.textSecondary)
-                            .lineLimit(1)
-                    }
-                }
-                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                .listRowSeparatorTint(AppColor.divider)
+                RepositoryRowView(repository: repository)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
         }
