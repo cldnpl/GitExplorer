@@ -21,7 +21,7 @@ struct RepositoryRowView: View {
                     .foregroundStyle(AppColor.textPrimary)
                     .lineLimit(1)
 
-                if let description = repository.description, !description.isEmpty {
+                if let description = repository.displayDescription {
                     Text(description)
                         .font(.system(size: 14))
                         .foregroundStyle(AppColor.textSecondary)

@@ -47,8 +47,16 @@ extension Repository {
         return parts.count > 1 ? parts[1] : name
     }
 
-    /// Titolo formattato come richiesto dal case: "<organization> / <repository name>".
+    /// Titolo formattato come richiesto dal case: "<organization> / <repository name>",
+    /// ripulito da eventuali emoji.
     var displayTitle: String {
-        "\(organization) / \(repositoryName)"
+        "\(organization) / \(repositoryName)".removingEmoji()
+    }
+
+    /// Descrizione "About" ripulita dalle emoji; `nil` se vuota dopo la pulizia.
+    var displayDescription: String? {
+        guard let description else { return nil }
+        let cleaned = description.removingEmoji()
+        return cleaned.isEmpty ? nil : cleaned
     }
 }

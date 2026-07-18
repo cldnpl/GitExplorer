@@ -41,7 +41,7 @@ struct SearchView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(AppColor.textSecondary)
 
-            TextField("Search", text: $viewModel.query)
+            TextField("Search for repository", text: $viewModel.query)
                 .foregroundStyle(AppColor.textPrimary)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
@@ -103,10 +103,7 @@ struct SearchView: View {
     // MARK: - Stati testuali
 
     private var emptyState: some View {
-        message(
-            title: "Search the repository library",
-            subtitle: "Type at least 3 characters to start searching."
-        )
+        EmptyStateView()
     }
 
     private func message(title: String, subtitle: String, systemImage: String = "magnifyingglass") -> some View {
