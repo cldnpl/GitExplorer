@@ -38,6 +38,9 @@ struct GitHubService: GitHubServicing {
 
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
+        // GitHub richiede un User-Agent su ogni richiesta.
+        request.setValue("gitexplorer-app", forHTTPHeaderField: "User-Agent")
 
         let data: Data
         let response: URLResponse

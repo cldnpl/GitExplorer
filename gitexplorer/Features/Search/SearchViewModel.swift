@@ -27,10 +27,15 @@ final class SearchViewModel: ObservableObject {
     @Published private(set) var resultCount: Int = 0
 
     private let service: GitHubServicing
-    private var debounceTask: Task<Void, Never>?
+    private let debounceMilliseconds: Int
 
-    init(service: GitHubServicing = GitHubService()) {
+    /// Task di ricerca in corso. `private(set)` (quindi `internal`) così i test
+    /// possono attenderne il completamento in modo deterministico.
+    private(set) var debounceTask: Task<Void, Never>?
+
+    init(service: GitHubServicing = GitHubService(), debounceMilliseconds: Int = 350) {
         self.service = service
+        self.debounceMilliseconds = debounceMilliseconds
     }
 
     /// Da invocare a ogni variazione del testo di ricerca.
@@ -46,9 +51,9 @@ final class SearchViewModel: ObservableObject {
             return
         }
 
-        debounceTask = Task { [weak self] in
+        debounceTask = Task { [weak self, debounceMilliseconds] in
             // Debounce: attende una breve pausa nella digitazione.
-            try? await Task.sleep(for: .milliseconds(350))
+            try? await Task.sleep(for: .milliseconds(debounceMilliseconds))
             guard !Task.isCancelled else { return }
             await self?.search(text)
         }
