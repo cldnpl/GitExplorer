@@ -13,20 +13,20 @@ import SwiftUI
 /// 1. Mostrata solo al cold start.
 /// 2. Visibile per almeno 3 secondi.
 /// 3. Icona centrata nello schermo.
+///
+/// Lo sfondo è volutamente chiaro e fisso: il logo è in navy/teal e su uno
+/// sfondo scuro (dark mode) risulterebbe illeggibile. Uno splash brandizzato
+/// con sfondo chiaro è la convenzione tipica.
 struct SplashView: View {
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(.background)
+            Color.white
                 .ignoresSafeArea()
 
-            // NOTA: placeholder. Va sostituito con l'icona ufficiale
-            // esportata dal Figma (Export → SVG/PNG) una volta disponibile.
-            Image(systemName: "magnifyingglass.circle.fill")
+            Image("Logo")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 96, height: 96)
-                .foregroundStyle(.tint)
+                .frame(maxWidth: 220)
                 .accessibilityLabel("GitExplorer")
         }
     }
